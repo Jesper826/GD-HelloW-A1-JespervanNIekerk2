@@ -58,13 +58,13 @@ public class Bewegen : MonoBehaviour
         // Jump logic - only jump if player is grounded
         if (Input.GetKey(KeyCode.Space) && isGrounded)
         {
-            rb.velocity = new Vector3(rb.velocity.x, jumpspeed, rb.velocity.z);
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpspeed, rb.linearVelocity.z);
         }
 
         // Calculate movement vector (X for left/right, Z for forward/back)
-        Vector3 movement = new Vector3(moveHorizontal, rb.velocity.y / speed, moveVertical) * speed;
+        Vector3 movement = new Vector3(moveHorizontal, rb.linearVelocity.y / speed, moveVertical) * speed;
 
         // Apply velocity directly to Rigidbody without affecting rotation
-        rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
+        rb.linearVelocity = new Vector3(movement.x, rb.linearVelocity.y, movement.z);
     }
 }

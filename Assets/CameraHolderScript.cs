@@ -4,15 +4,11 @@ using UnityEngine;
 
 public class CameraHolderScript : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public Transform cameraPosition;
 
-    // Update is called once per frame
-    void Update()
+
+    private void Update()
     {
-        
+         transform.position = cameraPosition.position;
     }
 }
