@@ -8,45 +8,38 @@ public class SimplePlayerMovement : MonoBehaviour
     public float boostMultiplier = 2f;
     public KeyCode boostKey = KeyCode.LeftShift;
     public float rotationSpeed = 10f;
-    
+
     public Transform orientation;
+    public float jumpSpeed = 200f;
+    public float groundCheckDistance = 0.2f;
 
-    private float horizontalInput;
-    private float verticalInput;
-    private Vector3 moveDirection;
-
-    public float jumpspeed = 20f;
     private Rigidbody rb;
-
-    // Ground check variables
+    private Vector3 moveDirection;
     private bool isGrounded;
-    public float groundCheckDistance = 0.1f;  // Adjust as needed for your model
-    public LayerMask groundLayer;  // Assign a ground layer in Unity to check only against the ground
 
-
-
-    // Start is called before the first frame update
     void Start()
     {
-        // Get the Rigidbody component
         rb = GetComponent<Rigidbody>();
-
-        // Enable gravity for realistic movement
         rb.useGravity = true;
 
         if (orientation == null)
             orientation = transform;
     }
 
-    private void Update()
+    void Update()
     {
+        // Ground detection using a raycast
+        RaycastHit hit;
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, out hit, groundCheckDistance);
 
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance, groundLayer);
-
+        // Visualize the raycast in the editor for debugging
+        Color rayColor = isGrounded ? Color.red : Color.green;
+        Debug.DrawRay(transform.position, Vector3.down * groundCheckDistance, rayColor);
 
         // Capture input
-        horizontalInput = Input.GetAxis("Horizontal");
-        verticalInput = Input.GetAxis("Vertical");
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+        
 
         // Calculate move direction based on orientation
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
@@ -55,20 +48,22 @@ public class SimplePlayerMovement : MonoBehaviour
         float currentSpeed = Input.GetKey(boostKey) ? moveSpeed * boostMultiplier : moveSpeed;
 
         // Apply movement
-        transform.position += moveDirection.normalized * currentSpeed * Time.deltaTime;
+        Vector3 newPosition = transform.position + moveDirection.normalized * currentSpeed * Time.deltaTime;
+        rb.MovePosition(newPosition);
 
         // Handle rotation
         if (moveDirection != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            rb.MoveRotation(Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
         }
 
-        // Jump logic - only jump if player is grounded
-        if (Input.GetKey(KeyCode.Space) && isGrounded)
+        // Handle jump input
+        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpspeed, rb.linearVelocity.z);
+            Debug.Log(rb.linearVelocity);
+            rb.AddForce(Vector3.up * jumpSpeed, ForceMode.Impulse);
+
         }
     }
 }
-
