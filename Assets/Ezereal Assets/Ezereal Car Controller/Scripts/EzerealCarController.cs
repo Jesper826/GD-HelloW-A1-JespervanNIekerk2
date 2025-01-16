@@ -43,11 +43,11 @@ namespace Ezereal
         public float maxReverseSpeed = 30f; // 30f default
         public float horsePower = 1000f; // 100f0 default
         public float brakePower = 2000f; // 2000f default
-        public float handbrakeForce = 3000f; // 3000f default
+        public float handbrakeForce = 2000f; // 3000f default
         public float maxSteerAngle = 30f; // 30f default
         public float steeringSpeed = 5f; // 0.5f default
         public float stopThreshold = 1f; // 1f default. At what speed car will make a full stop
-        public float decelerationSpeed = 0.5f; // 0.5f default
+        public float decelerationSpeed = 1f; // 0.5f default
         public float maxSteeringWheelRotation = 360f; // 360 for real steering wheel. 120 would be more suitable for racing.
 
         [Header("Drive Type")]
